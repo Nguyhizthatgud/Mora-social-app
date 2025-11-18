@@ -5,6 +5,7 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Mora-social-app/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
