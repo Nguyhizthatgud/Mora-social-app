@@ -5,7 +5,7 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Mora-social-app/',
+  base: '/', // Root path for Netlify/Vercel
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
