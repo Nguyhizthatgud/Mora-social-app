@@ -1,7 +1,7 @@
 import React from 'react'
 import { GithubOutlined, LinkedinOutlined, TwitterOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/logo/logo.svg'
+import logo from '@/assets/logo/logo.svg'
 
 const Footer = () => {
     const year = new Date().getFullYear()
