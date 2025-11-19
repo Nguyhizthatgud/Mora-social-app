@@ -22,9 +22,15 @@ const generateRefreshToken = () => crypto.randomBytes(64).toString('hex');
 // @access  Public
 export const register = async (req, res) => {
     const { username, email, password, firstName, lastName } = req.body;
+
+    // Log incoming request data for debugging
+    console.log('Register request body:', req.body);
+    console.log('Parsed fields:', { username, email, password: password ? '***' : undefined, firstName, lastName });
+
     try {
         // check if user value blank 
         if (!username || !email || !password || !firstName || !lastName) {
+            console.log('Validation failed - missing fields');
             return res.status(400).json({ message: 'Please fill in all required fields' });
         }
         // Check if user exists
