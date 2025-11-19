@@ -3,7 +3,7 @@ import { useAuthStore } from "../stores/useAuthStore.js";
 const api = axios.create({
     baseURL: import.meta.env.MODE === "development"
         ? "http://localhost:5001/api"
-        : "https://mora-backend.onrender.com/api", // Update this with your actual Render URL
+        : "https://mora-social-app.onrender.com/api",
     withCredentials: true, // include cookies in requests
 });
 
