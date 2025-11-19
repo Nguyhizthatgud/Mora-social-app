@@ -93,7 +93,7 @@ export const login = async (req, res) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true, //no javascript access
             secure: process.env.NODE_ENV === 'production', // secure only in prod
-            sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // None required for cross-origin
             maxAge: REFRESH_TOKEN_TIME_TO_SAY_GOODBYE,
         });
         res.status(200).json({
@@ -122,7 +122,7 @@ export const logOut = async (req, res) => {
             res.clearCookie('refreshToken', {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+                sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             });
         }
         return res.status(200).json({ message: 'Logged out successfully' });
@@ -140,33 +140,51 @@ export const refreshToken = async (req, res) => {
     try {
         // get refresh token from cookies
         const existingToken = req.cookies?.refreshToken;
+        console.log('Refresh attempt - Cookie present:', !!existingToken);
+        
         // if it's missing
         if (!existingToken) {
-            return res.status(401).json({ message: 'token is missing' });
+            return res.status(401).json({ message: 'Refresh token missing from cookies' });
         }
 
         // find refresh token in db
         const session = await Session.findOne({ refreshToken: existingToken });
+        console.log('Session found:', !!session);
+        
         if (!session) {
-            return res.status(401).json({ message: 'Invalid refresh token' });
+            return res.status(401).json({ message: 'Invalid refresh token - session not found' });
         }
+        
         // check if expired
         if (session.expiresAt < new Date()) {
+            console.log('Session expired');
             // cleanup expired session
             await Session.deleteOne({ _id: session._id });
             res.clearCookie('refreshToken', {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
+                sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             });
             return res.status(401).json({ message: 'Refresh token expired' });
         }
 
+        // Check JWT_SECRET exists
+        if (!process.env.JWT_SECRET) {
+            console.error('FATAL: JWT_SECRET not set in environment');
+            return res.status(500).json({ message: 'Server configuration error' });
+        }
+
         // issue new access token (use same claim 'id' as login)
-        const accessToken = jwt.sign({ id: session.userId }, process.env.JWT_SECRET, { expiresIn: ACCESS_TOKEN_TIME_TO_SAY_GOODBYE });
+        const accessToken = jwt.sign(
+            { id: session.userId }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: ACCESS_TOKEN_TIME_TO_SAY_GOODBYE }
+        );
+        
+        console.log('Access token generated successfully');
         return res.status(200).json({ accessToken });
     } catch (error) {
-        console.error('refresh token error');
+        console.error('Refresh token error:', error.message, error.stack);
         return res.status(500).json({ message: error.message });
     }
 };
