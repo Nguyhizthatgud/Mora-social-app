@@ -3,7 +3,7 @@ import { Avatar, Button, Dropdown, Modal } from "antd"
 import { AppstoreOutlined, UnlockOutlined } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import Loginpage from '../Layout/components/Loginpage.jsx'
-import logo from "../../assets/logo/logo.svg"
+import logo from "../../assets/logo/Logo.svg"
 const Navbar = () => {
     const navigate = useNavigate();
     return (
