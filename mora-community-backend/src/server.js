@@ -22,26 +22,16 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 app.use(cors({
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps, curl, Postman)
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true, // allow cookies to be sent
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    origin: 'https://m0ra.netlify.app',
+    credentials: true
 }));
 
 app.use(express.urlencoded({ extended: true })); // form data parser
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'ok', 
+    res.status(200).json({
+        status: 'ok',
         message: 'MORA backend is running',
         environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString()

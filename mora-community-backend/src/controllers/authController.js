@@ -141,7 +141,7 @@ export const refreshToken = async (req, res) => {
         // get refresh token from cookies
         const existingToken = req.cookies?.refreshToken;
         console.log('Refresh attempt - Cookie present:', !!existingToken);
-        
+
         // if it's missing
         if (!existingToken) {
             return res.status(401).json({ message: 'Refresh token missing from cookies' });
@@ -150,11 +150,11 @@ export const refreshToken = async (req, res) => {
         // find refresh token in db
         const session = await Session.findOne({ refreshToken: existingToken });
         console.log('Session found:', !!session);
-        
+
         if (!session) {
             return res.status(401).json({ message: 'Invalid refresh token - session not found' });
         }
-        
+
         // check if expired
         if (session.expiresAt < new Date()) {
             console.log('Session expired');
@@ -176,11 +176,11 @@ export const refreshToken = async (req, res) => {
 
         // issue new access token (use same claim 'id' as login)
         const accessToken = jwt.sign(
-            { id: session.userId }, 
-            process.env.JWT_SECRET, 
+            { id: session.userId },
+            process.env.JWT_SECRET,
             { expiresIn: ACCESS_TOKEN_TIME_TO_SAY_GOODBYE }
         );
-        
+
         console.log('Access token generated successfully');
         return res.status(200).json({ accessToken });
     } catch (error) {
