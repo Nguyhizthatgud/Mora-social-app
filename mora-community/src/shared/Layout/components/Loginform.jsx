@@ -327,7 +327,7 @@ const Loginform = () => {
                         />
 
                         <Controller
-                            name="confirmPassword" setIsFlipped
+                            name="confirmPassword"
                             control={registerForm.control}
                             rules={{
                                 required: "Confirm password!",

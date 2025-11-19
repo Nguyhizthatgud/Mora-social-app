@@ -14,7 +14,7 @@ const Loginpage = () => {
                 {/* hero left side - login form */}
                 <Col xs={24} md={12}>
                     {/* login form */}
-                    <div className="border-0 rounded-lg bg-transparent shadow-lg p-8 max-w-md mx-auto hover:bg-gray-200 hover:transform hover:translate-y-2 duration-300 ease-in-out md: "  >
+                    <div className="border-0 rounded-lg bg-transparent shadow-lg p-8 max-w-md mx-auto hover:bg-gray-200 hover:transform hover:translate-y-2 duration-300 ease-in-out"  >
                         <Loginform />
                     </div>
                 </Col>
