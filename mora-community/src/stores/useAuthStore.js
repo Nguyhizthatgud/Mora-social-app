@@ -31,7 +31,10 @@ export const useAuthStore = create((set, get) => ({
             set({ loading: true });
             const accessToken = await authService.refresh();
             if (!accessToken) {
-                throw new Error('No access token returned from refresh');
+                // Don't error out - just silently fail (user needs to login again)
+                console.log('No refresh token available - user needs to login');
+                get().clearState();
+                return;
             }
             set({ accessToken });
             const { user } = get();
@@ -39,7 +42,8 @@ export const useAuthStore = create((set, get) => ({
                 await get().fetchMe();
             }
         } catch (error) {
-            console.error('Token refresh error:', error);
+            // Silently clear state on refresh failure (backend might be sleeping)
+            console.log('Token refresh failed (backend may be sleeping):', error.message);
             get().clearState();
         } finally {
             set({ loading: false });
@@ -53,7 +57,10 @@ export const useAuthStore = create((set, get) => ({
             await get().fetchMe();
             toast.success('Login successful! welcome back to MORA 😀');
         } catch (error) {
-            toast.error(`Failed to login, please try again`);
+            const errorMsg = error.response?.status === 503
+                ? 'Backend is waking up, please try again in 30 seconds'
+                : error.response?.data?.message || 'Failed to login, please try again';
+            toast.error(errorMsg);
             console.error('Login error:', error);
         } finally {
             set({ loading: false });
