@@ -1,11 +1,9 @@
 import React from 'react'
 import { Avatar, Button, Dropdown, Modal } from "antd"
 import { AppstoreOutlined, UnlockOutlined } from "@ant-design/icons"
-import { useNavigate } from "react-router-dom"
 import Loginpage from '../Layout/components/Loginpage.jsx'
 import logo from "../../assets/logo/Logo.svg"
 const Navbar = () => {
-    const navigate = useNavigate();
     return (
         <section className="header-section container flex items-center justify-between h-16 min-w-lg">
             <div className="logo flex items-center gap-3">
